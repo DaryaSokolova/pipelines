@@ -7,6 +7,7 @@ VERSION = '2023'
 
 TASKS = [
     tasks.LoadFile(input_file='original/original.csv', table='original'),
+    
     tasks.CTAS(
         table='norm',
         sql_query='''
@@ -19,9 +20,14 @@ TASKS = [
         output_file='norm',
     ),
 
+    # tasks.RunSQL("create TABLE original(id, name, url)"),
+    # tasks.RunSQL("create TABLE norm(id, name, url, domain_of_url)"),
+    
+    # tasks.RunSQL("insert INTO original VALUES(1, 'hello', 'http://hello.com/home')"),
+    
     # clean up:
-    tasks.RunSQL('drop table {original}'),
-    tasks.RunSQL('drop table {norm}'),
+    # tasks.RunSQL('drop table original'),
+    # tasks.RunSQL('drop table norm'),
 ]
 
 

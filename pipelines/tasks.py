@@ -39,6 +39,7 @@ class LoadFile(BaseTask):
     def run(self):
         print(f"Load file `{self.input_file}` to table `{self.table}`")
 
+import sqlite3
 
 class RunSQL(BaseTask):
     """Run custom SQL query"""
@@ -51,7 +52,19 @@ class RunSQL(BaseTask):
         return f'{self.title}'
 
     def run(self):
+        con = sqlite3.connect("task.db")
+        cur = con.cursor()
+        cur.execute(self.sql_query)
+        con.commit()
+        
+        # for row in cur.execute("SELECT * FROM original"):
+        #     print(row)
+            
+        # for row in cur.execute("SELECT * FROM norm"):
+        #     print(row)
+            
         print(f"Run SQL ({self.title}):\n{self.sql_query}")
+        
 
 
 
