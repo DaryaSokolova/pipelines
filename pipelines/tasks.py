@@ -28,7 +28,6 @@ class CopyToFile(BaseTask):
         
         data = [('id', 'name', 'url', 'domain_of_url')]
         for row in cur.execute("SELECT * FROM " + self.table):
-            # print(row[0])
             data.append(row)
         # print(data)
             
