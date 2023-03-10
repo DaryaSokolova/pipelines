@@ -23,6 +23,20 @@ class CopyToFile(BaseTask):
         return f'{self.table} -> {self.output_file}'
 
     def run(self):
+        con = sqlite3.connect("task.db")
+        cur = con.cursor()
+        
+        data = [('id', 'name', 'url', 'domain_of_url')]
+        for row in cur.execute("SELECT * FROM " + self.table):
+            # print(row[0])
+            data.append(row)
+        # print(data)
+            
+        myFile = open(self.output_file + '.csv', 'w', newline='')
+        with myFile:
+            writer = csv.writer(myFile)
+            writer.writerows(data)
+    
         print(f"Copy table `{self.table}` to file `{self.output_file}`")
 
 
@@ -43,7 +57,7 @@ class LoadFile(BaseTask):
         with open('original.csv', newline='') as File:  
             reader = csv.reader(File)
             for row in reader:
-                # print(row)
+                # у меня первая строка это названия столбцов
                 if (row[0] != 'id'):
                     temp = (row[0], row[1], row[2])
                     data.append(temp)
@@ -72,12 +86,6 @@ class RunSQL(BaseTask):
         cur.execute(self.sql_query)
         con.commit()
         
-        # for row in cur.execute("SELECT * FROM original"):
-        #     print(row)
-            
-        # for row in cur.execute("SELECT * FROM norm"):
-        #     print(row)
-            
         print(f"Run SQL ({self.title}):\n{self.sql_query}")
         
 
@@ -93,10 +101,6 @@ class CTAS(BaseTask):
 
     def short_description(self):
         return f'{self.title}'
-
-    # def _domain_of_url(x):
-    #     res = str(x).partition("://")[2].partition("/")[0]
-    #     print(res)
         
     def run(self):
         con = sqlite3.connect("task.db")
