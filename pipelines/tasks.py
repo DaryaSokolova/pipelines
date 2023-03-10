@@ -94,11 +94,21 @@ class CTAS(BaseTask):
     def short_description(self):
         return f'{self.title}'
 
+    # def _domain_of_url(x):
+    #     res = str(x).partition("://")[2].partition("/")[0]
+    #     print(res)
+        
     def run(self):
         con = sqlite3.connect("task.db")
         cur = con.cursor()
-        cur.execute(self.sql_query)
-        con.commit()
-        cur.execute("create table" + self.table)
+
+        def _domain_of_url(x):
+            res = str(x).partition("://")[2].partition("/")[0]
+            print(res)
+            return res
+
+        con.create_function("domain_of_url", 1, _domain_of_url)
+        cur.execute("Create table " + self.table + " as " + self.sql_query)
+        
         
         print(f"Create table `{self.table}` as SELECT:\n{self.sql_query}")
