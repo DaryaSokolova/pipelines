@@ -26,6 +26,8 @@ class CopyToFile(BaseTask):
         print(f"Copy table `{self.table}` to file `{self.output_file}`")
 
 
+import csv
+
 class LoadFile(BaseTask):
     """Load file to table"""
 
@@ -37,6 +39,19 @@ class LoadFile(BaseTask):
         return f'{self.input_file} -> {self.table}'
 
     def run(self):
+        data = []
+        with open('original.csv', newline='') as File:  
+            reader = csv.reader(File)
+            for row in reader:
+                # print(row)
+                if (row[0] != 'id'):
+                    temp = (row[0], row[1], row[2])
+                    data.append(temp)
+        
+        con = sqlite3.connect("task.db")
+        cur = con.cursor()
+        cur.executemany("INSERT INTO original VALUES(?, ?, ?)", data)
+        con.commit()
         print(f"Load file `{self.input_file}` to table `{self.table}`")
 
 import sqlite3
@@ -80,4 +95,10 @@ class CTAS(BaseTask):
         return f'{self.title}'
 
     def run(self):
+        con = sqlite3.connect("task.db")
+        cur = con.cursor()
+        cur.execute(self.sql_query)
+        con.commit()
+        cur.execute("create table" + self.table)
+        
         print(f"Create table `{self.table}` as SELECT:\n{self.sql_query}")
