@@ -8,7 +8,7 @@ VERSION = '2023'
 TASKS = [
     # tasks.RunSQL("create TABLE original(id, name, url)"),
     
-    # tasks.LoadFile(input_file='original/original.csv', table='original'),
+    tasks.LoadFile(input_file='original.csv', table='original666'),
 
     # tasks.RunSQL("create TABLE norm(id, name, url, domain_of_url)"),
     # tasks.CTAS(
@@ -20,8 +20,8 @@ TASKS = [
     # ),
     
     tasks.CopyToFile(
-        table='norm',
-        output_file='norm',
+        table='original666',
+        output_file='norm666',
     ),
     
     # clean up:

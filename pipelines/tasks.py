@@ -1,3 +1,6 @@
+import pandas as pd
+import sqlite3
+
 class BaseTask:
     """Base Pipeline Task"""
 
@@ -10,7 +13,6 @@ class BaseTask:
     def __str__(self):
         task_type = self.__class__.__name__
         return f'{task_type}: {self.short_description()}'
-
 
 class CopyToFile(BaseTask):
     """Copy table data to CSV file"""
@@ -31,10 +33,13 @@ class CopyToFile(BaseTask):
             data.append(row)
         # print(data)
             
-        myFile = open(self.output_file + '.csv', 'w', newline='')
-        with myFile:
-            writer = csv.writer(myFile)
-            writer.writerows(data)
+        # myFile = open(self.output_file + '.csv', 'w', newline='')
+        # with myFile:
+        #     writer = csv.writer(myFile)
+        #     writer.writerows(data)
+        
+        clients = pd.read_sql('SELECT * FROM '+ self.table, con)
+        clients.to_csv(self.output_file+".csv", index=False)
     
         print(f"Copy table `{self.table}` to file `{self.output_file}`")
 
@@ -62,9 +67,12 @@ class LoadFile(BaseTask):
                     data.append(temp)
         
         con = sqlite3.connect("task.db")
-        cur = con.cursor()
-        cur.executemany("INSERT INTO original VALUES(?, ?, ?)", data)
+        df = pd.read_csv(self.input_file)
+        df.to_sql(self.table, con, if_exists='append', index=False)
+        # cur = con.cursor()
+        # cur.executemany("INSERT INTO original VALUES(?, ?, ?)", data)
         con.commit()
+        
         print(f"Load file `{self.input_file}` to table `{self.table}`")
 
 import sqlite3
