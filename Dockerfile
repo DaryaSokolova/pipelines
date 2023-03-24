@@ -4,8 +4,8 @@ RUN pip install pandas
 COPY requirements.txt .
 RUN pip install --no-cache-dir -r requirements.txt
 
-WORKDIR /example_pipeline
-WORKDIR /pipelines
+WORKDIR /app
+
 COPY . .
 EXPOSE 8000
 CMD [ "python", "pipeline.py" ]
