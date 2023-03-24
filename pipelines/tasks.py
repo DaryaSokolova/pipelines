@@ -28,10 +28,6 @@ class CopyToFile(BaseTask):
         con = sqlite3.connect("task.db")
         cur = con.cursor()
         
-        data = [('id', 'name', 'url', 'domain_of_url')]
-        for row in cur.execute("SELECT * FROM " + self.table):
-            data.append(row)
-        # print(data)
             
         # myFile = open(self.output_file + '.csv', 'w', newline='')
         # with myFile:
@@ -40,6 +36,11 @@ class CopyToFile(BaseTask):
         
         clients = pd.read_sql('SELECT * FROM '+ self.table, con)
         clients.to_csv(self.output_file+".csv", index=False)
+        
+        data = [('id', 'name', 'url', 'domain_of_url')]
+        for row in cur.execute("SELECT * FROM " + self.table):
+            data.append(row)
+        # print(data)
     
         print(f"Copy table `{self.table}` to file `{self.output_file}`")
 
@@ -65,7 +66,7 @@ class LoadFile(BaseTask):
                 if (row[0] != 'id'):
                     temp = (row[0], row[1], row[2])
                     data.append(temp)
-        
+        # print(data)
         con = sqlite3.connect("task.db")
         df = pd.read_csv(self.input_file)
         df.to_sql(self.table, con, if_exists='append', index=False)
@@ -115,7 +116,7 @@ class CTAS(BaseTask):
 
         def _domain_of_url(x):
             res = str(x).partition("://")[2].partition("/")[0]
-            print(res)
+            # print(res)
             return res
 
         con.create_function("domain_of_url", 1, _domain_of_url)
