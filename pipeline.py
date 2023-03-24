@@ -18,7 +18,7 @@ TASKS = [
     
     tasks.CopyToFile(
         table='norm',
-        output_file='norm',
+        output_file='norm1',
     ),
     
     # clean up:
